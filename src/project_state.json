@@ -1,0 +1,214 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "Build \"ChoreQuest\", a family-friendly chore app that gamifies tasks as AI-generated quests with world themes, dual Kids/Adults modes, onboarding, avatars/levels, rewards, parent admin controls, a reward store, progress tracking, leaderboards, and offline-capable PWA using React+Vite+TS, Tailwind, Zustand, Framer Motion, and Gemini API with caching/rate limiting.",
+  "architectural_notes": [
+    "Tech stack: React 19 + Vite + TypeScript, Tailwind CSS, Zustand, Framer Motion; PWA-ready.",
+    "Persistence: LocalStorage + IndexedDB; maintain a local data schema version key.",
+    "Planned localStorage keys: chorequests:user, chorequests:tasks, chorequests:family, chorequests:settings, chorequests:avatars, chorequests:rewards, chorequests:ai-cache (24h TTL), chorequests:version.",
+    "AI integration: Google Gemini API free tier; use system prompts for consistency; cache common prompts and batch similar requests.",
+    "Rate limiting strategy: aggressive caching, background request queue, shorter prompts, batching, exponential backoff.",
+    "Performance targets: <2s load, <200ms interactions, 60fps animations, <2MB bundle; offline mode instant.",
+    "Auth/admin rule: if no family/admin exists yet for the logged-in Internet Identity, the first created profile/family creator is automatically granted Parent/Admin; Parent Dashboard and task/reward management require admin."
+  ],
+  "known_issues": [
+    "Parent Dashboard shows 'Access Denied' for first-time/creator accounts because no family/admin profile is created/assigned yet; user cannot add tasks."
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-add-an-authentication-and-authorization-layer-using-internet-identity-principals-allow-a-signed-in-principal-to-create-a-family-group-become-the-parent-admin-for-that-family-and-restrict-parent-only-operations-e-g-editing-chores-rewards-goals-family-members-to-admin-principals",
+      "title": "Add an authentication and authorization layer using Internet Identity principals: allow a signed-in principal to create a family group, become the parent/admin for that family, and restrict parent-only operations (e.g., editing chores, rewards, goals, family members) to admin principals.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-first-time-onboarding-flow-in-the-frontend-that-is-fully-functional-end-to-end-welcome-screen-age-selection-4-8-9-12-13-17-18-profile-creation-name-optional-gender-pronouns-avatar-creator-base-colors-accessories-optional-world-theme-selection-reward-system-selection-points-money-gems-combo-then-a-first-quest-tutorial-that-ends-with-a-completion-celebration",
+      "title": "Build first-time onboarding flow in the frontend that is fully functional end-to-end: welcome screen, age selection (4-8, 9-12, 13-17, 18+), profile creation (name, optional gender/pronouns), avatar creator (base + colors + accessories), optional world/theme selection, reward system selection (Points/Money/Gems/Combo), then a first-quest tutorial that ends with a completion celebration.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-dual-interface-modes-with-a-settings-toggle-kids-mode-bright-large-controls-animated-quest-narrative-and-adults-mode-minimal-efficient-task-list-view-ensure-mode-choice-persists-per-profile-and-is-applied-across-dashboards-and-navigation",
+      "title": "Implement Dual Interface Modes with a settings toggle: Kids Mode (bright, large controls, animated quest narrative) and Adults Mode (minimal, efficient task list view). Ensure mode choice persists per profile and is applied across dashboards and navigation.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-the-kids-mode-main-dashboard-with-large-quest-cards-with-pixel-fantasy-images-per-quest-progress-visual-numeric-a-prominent-accept-quest-action-animated-feedback-on-interactions-a-daily-login-bonus-indicator-claim-action-and-a-leaderboard-view-styled-like-a-quest-map",
+      "title": "Create the Kids Mode main dashboard with: large quest cards (with pixel/fantasy images), per-quest progress (visual + numeric), a prominent “ACCEPT QUEST” action, animated feedback on interactions, a daily login bonus indicator/claim action, and a leaderboard view styled like a quest map.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-the-adults-mode-dashboard-focused-on-productivity-a-clean-task-list-with-quick-add-edit-assignment-to-a-family-member-due-timing-fields-optional-status-todo-active-done-and-a-compact-summary-of-each-member-s-progress",
+      "title": "Create the Adults Mode dashboard focused on productivity: a clean task list with quick add/edit, assignment to a family member, due/timing fields (optional), status (todo/active/done), and a compact summary of each member’s progress.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-parent-settings-dashboard-admin-only-for-setting-up-and-managing-family-members-profiles-chores-tasks-including-age-appropriate-defaults-goals-reward-rules-and-the-reward-store-catalog-include-the-ability-to-customize-the-selected-world-theme-and-related-scene-styling-settings",
+      "title": "Implement Parent settings dashboard (admin-only) for setting up and managing: family members/profiles, chores/tasks (including age-appropriate defaults), goals, reward rules, and the reward store catalog; include the ability to customize the selected world/theme and related scene styling settings.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-a-rewards-store-experience-where-kids-can-cash-out-earned-points-xp-or-money-gems-depending-on-selected-reward-system-for-rewards-configured-by-parents-include-reward-history-and-prevent-redemption-when-the-balance-is-insufficient",
+      "title": "Build a Rewards Store experience where kids can “cash out” earned points/XP (or money/gems depending on selected reward system) for rewards configured by parents; include reward history and prevent redemption when the balance is insufficient.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-quest-generation-and-storytelling-without-third-party-llm-calls-provide-a-deterministic-quest-writer-that-produces-a-task-recommendations-b-a-2-sentence-mission-brief-c-2-3-quick-tips-d-a-completion-encouragement-line-and-e-milestone-celebration-messages-based-on-user-age-bracket-and-selected-world-theme-cache-generated-strings-for-24-hours-keyed-by-prompt-type-task-id-age-bracket-theme-to-mimic-the-requested-ai-cache-behavior",
+      "title": "Implement quest generation and storytelling without third-party LLM calls: provide a deterministic “Quest Writer” that produces (a) task recommendations, (b) a 2-sentence mission brief, (c) 2–3 quick tips, (d) a completion encouragement line, and (e) milestone celebration messages based on user age bracket and selected world/theme; cache generated strings for 24 hours keyed by (prompt-type, task-id, age-bracket, theme) to mimic the requested AI-cache behavior.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-offline-first-behavior-and-performance-safeguards-cache-the-latest-app-snapshot-locally-in-the-browser-for-instant-startup-gracefully-operate-in-read-only-mode-when-offline-and-ensure-primary-interactions-accept-quest-mark-complete-claim-daily-bonus-respond-within-200ms-with-optimistic-ui-updates-and-background-sync-when-connectivity-returns",
+      "title": "Add offline-first behavior and performance safeguards: cache the latest “app snapshot” locally in the browser for instant startup, gracefully operate in read-only mode when offline, and ensure primary interactions (accept quest, mark complete, claim daily bonus) respond within ~200ms with optimistic UI updates and background sync when connectivity returns.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-establish-a-cohesive-visual-theme-for-the-mvp-aligned-to-pixel-art-fantasy-quest-avoid-blue-purple-default-palette-define-colors-typography-spacing-and-component-styling-rules-and-apply-them-consistently-across-kids-mode-adults-mode-onboarding-parent-dashboard-and-store",
+      "title": "Establish a cohesive visual theme for the MVP aligned to “pixel art / fantasy quest” (avoid blue/purple default palette): define colors, typography, spacing, and component styling rules, and apply them consistently across Kids Mode, Adults Mode, onboarding, parent dashboard, and store.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-static-generated-pixel-fantasy-illustration-assets-to-the-frontend-served-from-frontend-public-assets-generated-and-render-them-in-the-ui-for-app-logo-world-theme-banners-quest-card-placeholders-and-leaderboard-quest-map-background",
+      "title": "Add static generated pixel/fantasy illustration assets to the frontend (served from frontend/public/assets/generated) and render them in the UI for: app logo, world/theme banners, quest card placeholders, and leaderboard quest-map background.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-parent-dashboard-access-denied-screen-to-help-the-app-creator-recover-when-the-current-user-is-not-admin-show-a-become-parent-admin-action-only-when-the-backend-indicates-that-no-admin-exists-on-success-refresh-admin-status-and-unlock-the-parent-dashboard-without-requiring-a-page-reload",
+      "title": "Update the Parent Dashboard access-denied screen to help the app creator recover: when the current user is not admin, show a \"Become Parent Admin\" action only when the backend indicates that no admin exists; on success, refresh admin status and unlock the Parent Dashboard without requiring a page reload.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-hooks-mutations-needed-to-support-the-admin-bootstrap-flow-query-for-whether-an-admin-exists-mutation-to-claim-bootstrap-admin-and-ensure-relevant-cached-queries-are-invalidated-e-g-isadmin-currentuserprofile-after-a-successful-promotion",
+      "title": "Add React Query hooks/mutations needed to support the admin-bootstrap flow (query for whether an admin exists; mutation to claim/bootstrap admin), and ensure relevant cached queries are invalidated (e.g., isAdmin, currentUserProfile) after a successful promotion.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "User profiles & family setup (kids/adults profiles, family groups, parent/admin controls, age-appropriate assignments)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Dual interface modes: Kids Mode (bright, narrative, large buttons/animations) and Adults Mode (minimal task list), toggle in settings",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Onboarding flow: welcome, age selection, profile creation, avatar creator, choose reward system, first quest tutorial + celebration",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Quest system with AI-generated chores: world theme selection, mission brief narrative, tips, encouragement, milestone celebration",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Kids main dashboard: quest cards with images, progress bars, accept quest, interactions/animations, daily login bonus, quest-map leaderboard",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Rewards & progression: points/money/gems/combination, leveling avatars, reward history, cash-out store for awards",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Parent settings dashboard to configure/edit chores, goals, rewards, and customize scenes/award store",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Offline-first persistence + PWA readiness (LocalStorage + IndexedDB, instant offline mode)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Gemini API integration with free-tier constraints: system prompt consistency, caching (24h TTL), batching/queueing, exponential backoff",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Implement core data models and persistence for ChoreQuest in the Motoko single-actor backend: users/profiles (kid/adult), family group, tasks/quests, rewards store items, reward history, settings (mode, reward system, selected world theme), leaderboard stats (streaks/points/level), and a simple narrative progress state per user.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Admin onboarding/access control fix: ensure first-time user can create a family/profile and the first profile is auto-assigned Parent/Admin so they can access Parent Dashboard and add/manage tasks",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Update backend profile registration so that when the very first Parent/Admin does not exist yet, the first user who registers a profile is automatically granted admin privileges (Parent/Admin) and their stored UserProfile.role reflects that admin role, regardless of what role value the frontend passed.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add a backend bootstrap path for already-created profiles: provide a method that allows the caller to become Parent/Admin only if there is currently no admin in the canister state; otherwise it must fail.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "ChoreQuest",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

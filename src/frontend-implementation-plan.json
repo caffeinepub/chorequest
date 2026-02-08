@@ -1,0 +1,44 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Frontend admin bootstrap recovery flow (Parent Dashboard)",
+  "requirements": [
+    {
+      "id": "REQ-15",
+      "summary": "Update Parent Dashboard access-denied view to offer a self-serve “Become Parent Admin” recovery action only when no admin exists, and unlock the dashboard without reload after success.",
+      "acceptanceCriteria": [
+        "When isAdmin is false and backend reports no admin exists, the UI shows a \"Become Parent Admin\" button on the Access Denied view",
+        "Clicking the button successfully promotes the user (in the no-admin-exists case) and the Parent Dashboard renders normally afterward",
+        "When an admin already exists, the \"Become Parent Admin\" button is not shown and the Access Denied text remains"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/parent/ParentDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Use the selected authorization component’s RBAC capabilities to keep the Parent Dashboard admin-gated, and enhance the Access Denied UI by: (1) querying whether any admin exists, (2) conditionally rendering a “Become Parent Admin” action when no admin exists, and (3) calling the bootstrap mutation and allowing React Query invalidation to re-render the normal dashboard without a page reload. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "summary": "Add React Query hooks/mutations for admin bootstrap: query whether an admin exists, mutation to claim first admin, and invalidate relevant cached queries after promotion.",
+      "acceptanceCriteria": [
+        "There is a query hook that returns whether an admin exists, and it does not throw when the actor is unavailable (returns a safe default)",
+        "There is a mutation hook that calls the backend bootstrap method and shows a user-friendly error toast on failure",
+        "After successful promotion, the isAdmin query returns true without requiring a hard refresh, and the UI updates accordingly"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a React Query query hook (e.g., useAdminExists) that calls a backend capability to determine whether any admin exists, and safely returns a default (e.g., false or true per desired UX) when the actor is unavailable instead of throwing. Add a mutation hook (e.g., useBecomeFirstAdmin) that calls the backend bootstrap capability (becomeFirstAdmin) and shows a user-friendly toast on failure; on success invalidate cached queries including at minimum ['isAdmin'] and ['currentUserProfile'] so the UI updates immediately. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Update the frontend backend interface typings to include the new backend capability used by the admin-exists query hook (a boolean-returning method indicating whether any admin already exists), so TypeScript can type-check the new hook calls."
+        }
+      ]
+    }
+  ]
+}

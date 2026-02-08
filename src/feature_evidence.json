@@ -1,0 +1,43 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-the-parent-dashboard-access-denied-screen-to-help-the-app-creator-recover-when-the-current-user-is-not-admin-show-a-become-parent-admin-action-only-when-the-backend-indicates-that-no-admin-exists-on-success-refresh-admin-status-and-unlock-the-parent-dashboard-without-requiring-a-page-reload",
+      "featureTitle": "Update the Parent Dashboard access-denied screen to help the app creator recover: when the current user is not admin, show a \"Become Parent Admin\" action only when the backend indicates that no admin exists; on success, refresh admin status and unlock the Parent Dashboard without requiring a page reload.",
+      "files": [
+        "frontend/src/pages/parent/ParentDashboardPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-15"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-react-query-hooks-mutations-needed-to-support-the-admin-bootstrap-flow-query-for-whether-an-admin-exists-mutation-to-claim-bootstrap-admin-and-ensure-relevant-cached-queries-are-invalidated-e-g-isadmin-currentuserprofile-after-a-successful-promotion",
+      "featureTitle": "Add React Query hooks/mutations needed to support the admin-bootstrap flow (query for whether an admin exists; mutation to claim/bootstrap admin), and ensure relevant cached queries are invalidated (e.g., isAdmin, currentUserProfile) after a successful promotion.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-16"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

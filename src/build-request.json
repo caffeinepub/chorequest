@@ -1,0 +1,94 @@
+{
+  "kind": "build_request",
+  "title": "Bootstrap creator as Parent/Admin so tasks can be created",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-13",
+      "text": "Update backend profile registration so that when the very first Parent/Admin does not exist yet, the first user who registers a profile is automatically granted admin privileges (Parent/Admin) and their stored UserProfile.role reflects that admin role, regardless of what role value the frontend passed.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "whichever is easier,  i just want to be able to add stuff to my app, as the creator i cant even add task"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Given there are no admin principals yet, when a signed-in user calls registerProfile, the caller becomes an admin and can successfully call createTask afterward",
+        "The caller’s persisted UserProfile.role is the admin/parent role after registration in the no-admin-exists case",
+        "Given an admin already exists, registerProfile does not auto-promote new users to admin"
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "text": "Add a backend bootstrap path for already-created profiles: provide a method that allows the caller to become Parent/Admin only if there is currently no admin in the canister state; otherwise it must fail.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "as the creator i cant even add task"
+        ]
+      },
+      "acceptanceCriteria": [
+        "If no admin exists and the caller already has a profile, calling the bootstrap method promotes the caller to admin and they can createTask successfully",
+        "If an admin already exists, calling the bootstrap method fails with a clear error (trap) indicating an admin already exists",
+        "If the caller is not authenticated/authorized as a user under the existing permission system, the bootstrap method is rejected"
+      ]
+    },
+    {
+      "id": "REQ-15",
+      "text": "Update the Parent Dashboard access-denied screen to help the app creator recover: when the current user is not admin, show a \"Become Parent Admin\" action only when the backend indicates that no admin exists; on success, refresh admin status and unlock the Parent Dashboard without requiring a page reload.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "i just want to be able to add stuff to my app, as the creator i cant even add task"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When isAdmin is false and backend reports no admin exists, the UI shows a \"Become Parent Admin\" button on the Access Denied view",
+        "Clicking the button successfully promotes the user (in the no-admin-exists case) and the Parent Dashboard renders normally afterward",
+        "When an admin already exists, the \"Become Parent Admin\" button is not shown and the Access Denied text remains"
+      ]
+    },
+    {
+      "id": "REQ-16",
+      "text": "Add React Query hooks/mutations needed to support the admin-bootstrap flow (query for whether an admin exists; mutation to claim/bootstrap admin), and ensure relevant cached queries are invalidated (e.g., isAdmin, currentUserProfile) after a successful promotion.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "as the creator i cant even add task"
+        ]
+      },
+      "acceptanceCriteria": [
+        "There is a query hook that returns whether an admin exists, and it does not throw when the actor is unavailable (returns a safe default)",
+        "There is a mutation hook that calls the backend bootstrap method and shows a user-friendly error toast on failure",
+        "After successful promotion, the isAdmin query returns true without requiring a hard refresh, and the UI updates accordingly"
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single-actor Motoko canister with all logic in backend/main.mo",
+    "Do not edit files under frontend/src/components/ui or any immutablePaths listed in SYSTEM_CONTEXT",
+    "Use English for any user-facing UI text",
+    "Do not introduce external databases or third-party auth (Internet Identity only)"
+  ],
+  "nonGoals": [
+    "Implementing full family-group creation flows or multi-family support",
+    "Adding kid/parent selection screens during onboarding (the requested fix is to unblock creator/admin access)",
+    "Changing tasks/rewards/quest feature behavior beyond admin bootstrapping"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

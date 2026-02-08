@@ -1,0 +1,71 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-07T06:26:01.979Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 4,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-13",
+        "summary": "Update backend profile registration so that when the very first Parent/Admin does not exist yet, the first user who registers a profile is automatically granted admin privileges (Parent/Admin) and their stored UserProfile.role reflects that admin role, regardless of what role value the frontend passed.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-14",
+        "summary": "Add a backend bootstrap path for already-created profiles: provide a method that allows the caller to become Parent/Admin only if there is currently no admin in the canister state; otherwise it must fail.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-15",
+        "summary": "Update the Parent Dashboard access-denied screen to help the app creator recover: when the current user is not admin, show a \"Become Parent Admin\" action only when the backend indicates that no admin exists; on success, refresh admin status and unlock the Parent Dashboard without requiring a page reload.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/parent/ParentDashboardPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/parent/ParentDashboardPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-16",
+        "summary": "Add React Query hooks/mutations needed to support the admin-bootstrap flow (query for whether an admin exists; mutation to claim/bootstrap admin), and ensure relevant cached queries are invalidated (e.g., isAdmin, currentUserProfile) after a successful promotion.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/backend.d.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/backend.d.ts"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "build-template/README.md",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/parent/ParentDashboardPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
